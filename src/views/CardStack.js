@@ -362,7 +362,9 @@ class CardStack extends Component {
     return (
       <View {...handlers} style={styles.container}>
         <View style={styles.scenes}>
-          {scenes.map((s: *) => this._renderCard(s))}
+          {scenes.map((s: NavigationScene) =>
+            this._renderCard(s, options.lazyRange)
+          )}
         </View>
         {floatingHeader}
       </View>
@@ -409,7 +411,7 @@ class CardStack extends Component {
     );
   }
 
-  _renderCard = (scene: NavigationScene): React.Element<*> => {
+  _renderCard = (scene: NavigationScene, lazyRange?: number): React.Element<*> => {
     const isModal = this.props.mode === 'modal';
 
     /* $FlowFixMe */
@@ -426,6 +428,13 @@ class CardStack extends Component {
       scene.route.routeName
     );
 
+    let shouldRender = true;
+    if (typeof lazyRange === 'number') {
+      const index = this.props.navigation.state.index;
+      const diff = index - scene.index;
+      shouldRender = diff <= lazyRange && diff >= lazyRange * -1;
+    }
+
     return (
       <Card
         {...this.props}
@@ -433,7 +442,7 @@ class CardStack extends Component {
         style={[style, this.props.cardStyle]}
         scene={scene}
       >
-        {this._renderInnerScene(SceneComponent, scene)}
+        {shouldRender && this._renderInnerScene(SceneComponent, scene)}
       </Card>
     );
   };

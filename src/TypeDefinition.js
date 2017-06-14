@@ -235,6 +235,7 @@ export type NavigationStackScreenOptions = NavigationScreenOptions & {
   headerRight?: React.Element<*>,
   headerStyle?: Style,
   gesturesEnabled?: boolean,
+  lazyRange?: number,
 };
 
 export type NavigationStackRouterConfig = {
